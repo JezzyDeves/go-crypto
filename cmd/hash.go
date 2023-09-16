@@ -1,33 +1,30 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
+	"encoding/hex"
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	input string
 )
 
 // hashCmd represents the hash command
 var hashCmd = &cobra.Command{
 	Use:   "hash",
-	Short: "Runs data through the bcrypt hash",
+	Short: "Runs password through the bcrypt hash",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hash called")
+		hash, _ := bcrypt.GenerateFromPassword([]byte(input), bcrypt.DefaultCost)
+
+		fmt.Println("Hash: ", hex.EncodeToString(hash))
 	},
 }
 
 func init() {
 	bcryptCmd.AddCommand(hashCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// hashCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// hashCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	hashCmd.Flags().StringVarP(&input, "input", "i", "", "The string input to be hashed")
 }
